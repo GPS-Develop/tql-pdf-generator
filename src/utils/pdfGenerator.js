@@ -10,12 +10,11 @@ export const generateTQLPDF = async (formData) => {
   const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
   const helveticaBoldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
   
-  const { width, height } = page.getSize();
+  const { height } = page.getSize();
   
   // Colors
   const blue = rgb(0, 0.588, 0.843); // #0096D6
   const black = rgb(0, 0, 0);
-  const darkGray = rgb(0.3, 0.3, 0.3);
   
   // Helper function to draw text
   const drawText = (text, x, y, options = {}) => {
