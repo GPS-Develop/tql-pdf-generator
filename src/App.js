@@ -7,6 +7,7 @@ function App() {
   const [formData, setFormData] = useState({
     // User Input Fields Only - Prepopulated for testing
     pickup: {
+      name: 'ABC Warehouse',
       address: '6878 Kelly Ave',
       city: 'Morrow',
       state: 'GA',
@@ -15,6 +16,7 @@ function App() {
     },
     
     delivery: {
+      name: 'XYZ Distribution Center',
       address: '995 Bruce Lane',
       city: 'Tifton',
       state: 'GA',
@@ -23,13 +25,57 @@ function App() {
     },
     
     commodity: {
-      quantity: '20',
-      unit: 'Pallets',
-      description: 'Plastic bags'
+      description: 'Plastic bags',
+      trailerType: 'Van',
+      driverName: 'Gurpreet'
     }
   });
 
   const [isGenerating, setIsGenerating] = useState(false);
+
+  const setCanadaDefaults = () => {
+    setFormData(prev => ({
+      ...prev,
+      pickup: {
+        name: 'Ontario Food Terminal',
+        address: '165 The Queensway',
+        city: 'Etobicoke',
+        state: 'ON',
+        zip: 'M8Y 1H8',
+        date: prev.pickup.date
+      },
+      delivery: {
+        name: '',
+        address: '',
+        city: '',
+        state: '',
+        zip: '',
+        date: prev.delivery.date
+      }
+    }));
+  };
+
+  const setUSADefaults = () => {
+    setFormData(prev => ({
+      ...prev,
+      pickup: {
+        name: '',
+        address: '',
+        city: '',
+        state: '',
+        zip: '',
+        date: prev.pickup.date
+      },
+      delivery: {
+        name: 'Ontario Food Terminal',
+        address: '165 The Queensway',
+        city: 'Etobicoke',
+        state: 'ON',
+        zip: 'M8Y 1H8',
+        date: prev.delivery.date
+      }
+    }));
+  };
 
   const handleInputChange = (section, field, value) => {
     setFormData(prev => ({
@@ -52,9 +98,9 @@ function App() {
   };
 
   const generatePDF = async () => {
-    if (!formData.pickup.address || !formData.pickup.city || !formData.pickup.date ||
-        !formData.delivery.address || !formData.delivery.city || !formData.delivery.date ||
-        !formData.commodity.quantity || !formData.commodity.description) {
+    if (!formData.pickup.name || !formData.pickup.address || !formData.pickup.city || !formData.pickup.date ||
+        !formData.delivery.name || !formData.delivery.address || !formData.delivery.city || !formData.delivery.date ||
+        !formData.commodity.description || !formData.commodity.trailerType || !formData.commodity.driverName) {
       alert('Please fill in all required fields before generating the PDF.');
       return;
     }
@@ -188,7 +234,7 @@ function App() {
       
       drawText('Bliss Carriers Ltd (ab)', 55, 250, { size: 8 });
       drawText('Sunny', 250, 250, { size: 8 });
-      drawText('Gurpreet', 405, 250, { size: 8 });
+      drawText(formData.commodity.driverName, 405, 250, { size: 8 });
 
       // Load Information Section
       drawRect(50, 265, 512, 20, { color: blue });
@@ -218,9 +264,9 @@ function App() {
       drawRect(450, 300, 112, 15, { borderWidth: 1 });
       
       drawText('FTL', 55, 310, { size: 8 });
-      drawText('Van Or Reefer', 115, 310, { size: 8 });
-      drawText('48 ft or 53 ft', 185, 310, { size: 8 });
-      drawText(`${formData.commodity.quantity} ${formData.commodity.unit.toLowerCase()}/0 cases`, 255, 310, { size: 8 });
+      drawText(formData.commodity.trailerType === 'Refrigerated' ? 'Reefer' : 'Van', 115, 310, { size: 8 });
+      drawText('53 ft', 185, 310, { size: 8 });
+      drawText('24 pallets', 255, 310, { size: 8 });
       drawText('Non-Hazardous', 365, 310, { size: 8 });
 
       // Carrier Responsible For Section
@@ -243,7 +289,7 @@ function App() {
       
       drawText('None w/ valid unloading receipt', 55, 370, { size: 8 });
       drawText('None', 225, 370, { size: 8 });
-      drawText('22000', 355, 370, { size: 8 });
+      drawText('41000', 355, 370, { size: 8 });
 
       // Pickups Section
       drawRect(50, 385, 512, 20, { color: blue });
@@ -289,9 +335,9 @@ function App() {
       drawText('Information:', 55, 453, { size: 8, bold: true, color: rgb(1, 1, 1) });
       
       drawRect(50, 460, 250, 45, { borderWidth: 1 });
-      drawText(formData.pickup.address, 55, 470, { size: 8 });
-      drawText(`${formData.pickup.city} ${formData.pickup.state.toUpperCase()} ${formData.pickup.zip}`, 55, 485, { size: 8 });
-      drawText('404-835-6970', 55, 500, { size: 8 });
+      drawText(formData.pickup.name, 55, 470, { size: 8 });
+      drawText(formData.pickup.address, 55, 485, { size: 8 });
+      drawText(`${formData.pickup.city} ${formData.pickup.state.toUpperCase()} ${formData.pickup.zip}`, 55, 500, { size: 8 });
 
       // Commodities section
       drawRect(310, 440, 252, 20, { color: blue });
@@ -308,38 +354,31 @@ function App() {
       drawText('Commodity', 395, 470, { size: 8, bold: true });
       drawText('Notes', 475, 470, { size: 8, bold: true });
       
-      // Commodities table - Data row
-      drawRect(310, 475, 40, 15, { borderWidth: 1 });
-      drawRect(350, 475, 40, 15, { borderWidth: 1 });
-      drawRect(390, 475, 80, 15, { borderWidth: 1 });
-      drawRect(470, 475, 92, 15, { borderWidth: 1 });
+      // Commodities table - Data row (taller to accommodate notes)
+      drawRect(310, 475, 40, 30, { borderWidth: 1 });
+      drawRect(350, 475, 40, 30, { borderWidth: 1 });
+      drawRect(390, 475, 80, 30, { borderWidth: 1 });
+      drawRect(470, 475, 92, 30, { borderWidth: 1 });
       
-      drawText(formData.commodity.quantity, 315, 485, { size: 8 });
-      drawText(formData.commodity.unit, 355, 485, { size: 8 });
+      drawText('24', 315, 485, { size: 8 });
+      drawText('Pallets', 355, 485, { size: 8 });
       drawText(formData.commodity.description.substring(0, 12), 395, 485, { size: 8 });
+      
+      // Dynamic notes based on trailer type - split into multiple lines
+      if (formData.commodity.trailerType === 'Refrigerated') {
+        drawText('Keep refrigerated', 475, 483, { size: 7 });
+        drawText('if any issues', 475, 492, { size: 7 });
+        drawText('call broker', 475, 501, { size: 7 });
+      } else {
+        drawText('Call broker if', 475, 487, { size: 7 });
+        drawText('any issue', 475, 496, { size: 7 });
+      }
 
       // Drops Section
-      drawRect(50, 515, 512, 20, { color: blue });
-      drawText('DROPS', 55, 530, { size: 10, bold: true, color: rgb(1, 1, 1) });
+      drawRect(50, 530, 512, 20, { color: blue });
+      drawText('DROPS', 55, 545, { size: 10, bold: true, color: rgb(1, 1, 1) });
       
       // Drops table - Header row
-      drawRect(50, 535, 110, 15, { borderWidth: 1 });
-      drawRect(160, 535, 60, 15, { borderWidth: 1 });
-      drawRect(220, 535, 40, 15, { borderWidth: 1 });
-      drawRect(260, 535, 40, 15, { borderWidth: 1 });
-      drawRect(300, 535, 80, 15, { borderWidth: 1 });
-      drawRect(380, 535, 70, 15, { borderWidth: 1 });
-      drawRect(450, 535, 112, 15, { borderWidth: 1 });
-      
-      drawText('Consignee', 55, 545, { size: 8, bold: true });
-      drawText('City', 165, 545, { size: 8, bold: true });
-      drawText('State', 225, 545, { size: 8, bold: true });
-      drawText('Zip', 265, 545, { size: 8, bold: true });
-      drawText('Delivery PO', 305, 545, { size: 8, bold: true });
-      drawText('Date', 385, 545, { size: 8, bold: true });
-      drawText('Time', 455, 545, { size: 8, bold: true });
-      
-      // Drops table - Data row
       drawRect(50, 550, 110, 15, { borderWidth: 1 });
       drawRect(160, 550, 60, 15, { borderWidth: 1 });
       drawRect(220, 550, 40, 15, { borderWidth: 1 });
@@ -348,22 +387,40 @@ function App() {
       drawRect(380, 550, 70, 15, { borderWidth: 1 });
       drawRect(450, 550, 112, 15, { borderWidth: 1 });
       
+      drawText('Consignee', 55, 560, { size: 8, bold: true });
+      drawText('City', 165, 560, { size: 8, bold: true });
+      drawText('State', 225, 560, { size: 8, bold: true });
+      drawText('Zip', 265, 560, { size: 8, bold: true });
+      drawText('Delivery PO', 305, 560, { size: 8, bold: true });
+      drawText('Date', 385, 560, { size: 8, bold: true });
+      drawText('Time', 455, 560, { size: 8, bold: true });
+      
+      // Drops table - Data row
+      drawRect(50, 565, 110, 15, { borderWidth: 1 });
+      drawRect(160, 565, 60, 15, { borderWidth: 1 });
+      drawRect(220, 565, 40, 15, { borderWidth: 1 });
+      drawRect(260, 565, 40, 15, { borderWidth: 1 });
+      drawRect(300, 565, 80, 15, { borderWidth: 1 });
+      drawRect(380, 565, 70, 15, { borderWidth: 1 });
+      drawRect(450, 565, 112, 15, { borderWidth: 1 });
+      
       const deliveryConsignee = `${formData.delivery.address.substring(0, 12)} (${formData.delivery.city.toUpperCase()}, ${formData.delivery.state.toUpperCase()})`;
-      drawText(deliveryConsignee, 55, 560, { size: 7 });
-      drawText(formData.delivery.city, 165, 560, { size: 8 });
-      drawText(formData.delivery.state.toUpperCase(), 225, 560, { size: 8 });
-      drawText(formData.delivery.zip, 265, 560, { size: 8 });
-      drawText('2304942', 305, 560, { size: 8 });
-      drawText(formatDate(formData.delivery.date), 385, 560, { size: 8 });
-      drawText('FCFS 07:00 to 12:00', 455, 560, { size: 7 });
+      drawText(deliveryConsignee, 55, 575, { size: 7 });
+      drawText(formData.delivery.city, 165, 575, { size: 8 });
+      drawText(formData.delivery.state.toUpperCase(), 225, 575, { size: 8 });
+      drawText(formData.delivery.zip, 265, 575, { size: 8 });
+      drawText('2304942', 305, 575, { size: 8 });
+      drawText(formatDate(formData.delivery.date), 385, 575, { size: 8 });
+      drawText('FCFS 07:00 to 12:00', 455, 575, { size: 7 });
 
       // Delivery Information section
-      drawRect(50, 570, 512, 20, { color: blue });
-      drawText('Information:', 55, 583, { size: 8, bold: true, color: rgb(1, 1, 1) });
+      drawRect(50, 585, 512, 20, { color: blue });
+      drawText('Information:', 55, 598, { size: 8, bold: true, color: rgb(1, 1, 1) });
       
-      drawRect(50, 590, 512, 30, { borderWidth: 1 });
-      drawText(formData.delivery.address, 55, 600, { size: 8 });
-      drawText(`${formData.delivery.city} ${formData.delivery.state.toUpperCase()} ${formData.delivery.zip}`, 55, 615, { size: 8 });
+      drawRect(50, 605, 512, 45, { borderWidth: 1 });
+      drawText(formData.delivery.name, 55, 615, { size: 8 });
+      drawText(formData.delivery.address, 55, 630, { size: 8 });
+      drawText(`${formData.delivery.city} ${formData.delivery.state.toUpperCase()} ${formData.delivery.zip}`, 55, 645, { size: 8 });
 
       // Footer
       drawText('Page 1 of 1', 280, 755, { size: 8 });
@@ -422,10 +479,43 @@ function App() {
       <div className="form-container">
         <div className="simplified-form">
           
+          {/* Country Selection Buttons */}
+          <div className="country-selection">
+            <h3 className="section-header">🌍 ROUTE SELECTION</h3>
+            <div className="country-buttons">
+              <button 
+                type="button" 
+                className="country-btn canada-btn" 
+                onClick={setCanadaDefaults}
+              >
+                🇨🇦 CANADA
+                <span className="btn-subtitle">Pickup from Ontario Food Terminal</span>
+              </button>
+              <button 
+                type="button" 
+                className="country-btn usa-btn" 
+                onClick={setUSADefaults}
+              >
+                🇺🇸 USA
+                <span className="btn-subtitle">Delivery to Ontario Food Terminal</span>
+              </button>
+            </div>
+          </div>
+          
           {/* Pickup Information */}
           <div className="form-section">
             <h3 className="section-header">📍 PICKUP INFORMATION</h3>
             <div className="form-grid">
+              <div className="form-group">
+                <label>Pickup Name</label>
+                <input
+                  type="text"
+                  value={formData.pickup.name}
+                  onChange={(e) => handleInputChange('pickup', 'name', e.target.value)}
+                  placeholder="e.g., ABC Warehouse"
+                  required
+                />
+              </div>
               <div className="form-group">
                 <label>Pickup Address</label>
                 <input
@@ -484,6 +574,16 @@ function App() {
             <h3 className="section-header">🚚 DELIVERY INFORMATION</h3>
             <div className="form-grid">
               <div className="form-group">
+                <label>Delivery Name</label>
+                <input
+                  type="text"
+                  value={formData.delivery.name}
+                  onChange={(e) => handleInputChange('delivery', 'name', e.target.value)}
+                  placeholder="e.g., XYZ Distribution Center"
+                  required
+                />
+              </div>
+              <div className="form-group">
                 <label>Delivery Address</label>
                 <input
                   type="text"
@@ -539,32 +639,8 @@ function App() {
           {/* Commodity Information */}
           <div className="form-section">
             <h3 className="section-header">📦 COMMODITY INFORMATION</h3>
-            <div className="form-grid commodity-grid">
+            <div className="form-grid">
               <div className="form-group">
-                <label>Quantity</label>
-                <input
-                  type="number"
-                  value={formData.commodity.quantity}
-                  onChange={(e) => handleInputChange('commodity', 'quantity', e.target.value)}
-                  placeholder="20"
-                  min="1"
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Unit</label>
-                <select
-                  value={formData.commodity.unit}
-                  onChange={(e) => handleInputChange('commodity', 'unit', e.target.value)}
-                  required
-                >
-                  <option value="Pallets">Pallets</option>
-                  <option value="Cases">Cases</option>
-                  <option value="Boxes">Boxes</option>
-                  <option value="Pieces">Pieces</option>
-                </select>
-              </div>
-              <div className="form-group full-width">
                 <label>Commodity Description</label>
                 <input
                   type="text"
@@ -574,33 +650,31 @@ function App() {
                   required
                 />
               </div>
+              <div className="form-group">
+                <label>Trailer Type</label>
+                <select
+                  value={formData.commodity.trailerType}
+                  onChange={(e) => handleInputChange('commodity', 'trailerType', e.target.value)}
+                  required
+                >
+                  <option value="Van">Van</option>
+                  <option value="Refrigerated">Refrigerated</option>
+                </select>
+              </div>
+              <div className="form-group">
+                <label>Driver Name</label>
+                <input
+                  type="text"
+                  value={formData.commodity.driverName}
+                  onChange={(e) => handleInputChange('commodity', 'driverName', e.target.value)}
+                  placeholder="e.g., Gurpreet"
+                  required
+                />
+              </div>
             </div>
           </div>
 
-          {/* Static Information Preview */}
-          <div className="static-info-section">
-            <h3 className="section-header">ℹ️ DOCUMENT PREVIEW</h3>
-            <div className="static-info-grid">
-              <div className="info-card">
-                <h4>TQL Contact</h4>
-                <p><strong>Name:</strong> Joshua Buggs</p>
-                <p><strong>Phone:</strong> 800-580-3101 x50466</p>
-                <p><strong>Email:</strong> JFlynnBuggs@TQL.com</p>
-              </div>
-              <div className="info-card">
-                <h4>Carrier</h4>
-                <p><strong>Company:</strong> Bliss Carriers Ltd (ab)</p>
-                <p><strong>Dispatcher:</strong> Sunny</p>
-                <p><strong>Driver:</strong> Gurpreet</p>
-              </div>
-              <div className="info-card">
-                <h4>Load Details</h4>
-                <p><strong>Mode:</strong> FTL</p>
-                <p><strong>Trailer:</strong> Van Or Reefer (48 ft or 53 ft)</p>
-                <p><strong>Hazmat:</strong> Non-Hazardous</p>
-              </div>
-            </div>
-          </div>
+
 
         </div>
 
