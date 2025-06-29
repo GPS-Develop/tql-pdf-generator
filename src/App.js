@@ -25,9 +25,9 @@ function App() {
     },
     
     commodity: {
-      description: 'Plastic bags',
-      trailerType: 'Van',
-      driverName: 'Gurpreet'
+      description: '',
+      trailerType: 'Refrigerated',
+      driverName: 'Gurmail Singh'
     }
   });
 
@@ -491,7 +491,6 @@ function App() {
                 onClick={setCanadaDefaults}
               >
                 🇨🇦 CANADA
-                <span className="btn-subtitle">Pickup from Ontario Food Terminal</span>
               </button>
               <button 
                 type="button" 
@@ -499,7 +498,6 @@ function App() {
                 onClick={setUSADefaults}
               >
                 🇺🇸 USA
-                <span className="btn-subtitle">Delivery to Ontario Food Terminal</span>
               </button>
             </div>
           </div>
@@ -638,9 +636,9 @@ function App() {
               </div>
             </div>
 
-          {/* Commodity Information */}
+          {/* Additional Information */}
           <div className="form-section">
-            <h3 className="section-header">📦 COMMODITY INFORMATION</h3>
+            <h3 className="section-header">📦 ADDITIONAL INFO</h3>
             <div className="form-grid">
                 <div className="form-group">
                 <label>Commodity Description</label>
@@ -650,9 +648,9 @@ function App() {
                   onChange={(e) => handleInputChange('commodity', 'description', e.target.value)}
                   placeholder="e.g., Plastic bags"
                   required
-                  />
-                </div>
-                <div className="form-group">
+                />
+              </div>
+              <div className="form-group">
                 <label>Trailer Type</label>
                 <select
                   value={formData.commodity.trailerType}
@@ -661,22 +659,22 @@ function App() {
                 >
                   <option value="Van">Van</option>
                   <option value="Refrigerated">Refrigerated</option>
+                  <option value="Flatbed">Flatbed</option>
+                  <option value="Tanker">Tanker</option>
                 </select>
               </div>
               <div className="form-group">
                 <label>Driver Name</label>
-                  <input
-                    type="text"
+                <input
+                  type="text"
                   value={formData.commodity.driverName}
                   onChange={(e) => handleInputChange('commodity', 'driverName', e.target.value)}
-                  placeholder="e.g., Gurpreet"
+                  placeholder="e.g., John Smith"
                   required
                 />
               </div>
             </div>
           </div>
-
-
 
         </div>
 
