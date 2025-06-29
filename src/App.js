@@ -34,9 +34,9 @@ function App() {
   const [isGenerating, setIsGenerating] = useState(false);
 
   const setCanadaDefaults = () => {
-    setFormData(prev => ({
-      ...prev,
-      pickup: {
+      setFormData(prev => ({
+        ...prev,
+        pickup: {
         name: 'Ontario Food Terminal',
         address: '165 The Queensway',
         city: 'Etobicoke',
@@ -51,13 +51,13 @@ function App() {
         state: '',
         zip: '',
         date: prev.delivery.date
-      }
-    }));
+        }
+      }));
   };
 
   const setUSADefaults = () => {
-    setFormData(prev => ({
-      ...prev,
+      setFormData(prev => ({
+        ...prev,
       pickup: {
         name: '',
         address: '',
@@ -66,25 +66,25 @@ function App() {
         zip: '',
         date: prev.pickup.date
       },
-      delivery: {
+        delivery: {
         name: 'Ontario Food Terminal',
         address: '165 The Queensway',
         city: 'Etobicoke',
         state: 'ON',
         zip: 'M8Y 1H8',
         date: prev.delivery.date
-      }
-    }));
+        }
+      }));
   };
 
   const handleInputChange = (section, field, value) => {
-    setFormData(prev => ({
-      ...prev,
-      [section]: {
-        ...prev[section],
-        [field]: value
-      }
-    }));
+      setFormData(prev => ({
+        ...prev,
+        [section]: {
+          ...prev[section],
+          [field]: value
+        }
+      }));
   };
 
   const formatDate = (dateString) => {
@@ -312,120 +312,122 @@ function App() {
       drawText('Date', 375, 415, { size: 8, bold: true });
       drawText('Time', 455, 415, { size: 8, bold: true });
       
-      // Pickups table - Data row
-      drawRect(50, 420, 125, 15, { borderWidth: 1 });
-      drawRect(175, 420, 65, 15, { borderWidth: 1 });
-      drawRect(240, 420, 40, 15, { borderWidth: 1 });
-      drawRect(280, 420, 40, 15, { borderWidth: 1 });
-      drawRect(320, 420, 50, 15, { borderWidth: 1 });
-      drawRect(370, 420, 80, 15, { borderWidth: 1 });
-      drawRect(450, 420, 112, 15, { borderWidth: 1 });
+      // Pickups table - Data row (doubled height for Shed row)
+      drawRect(50, 420, 125, 30, { borderWidth: 1 });
+      drawRect(175, 420, 65, 30, { borderWidth: 1 });
+      drawRect(240, 420, 40, 30, { borderWidth: 1 });
+      drawRect(280, 420, 40, 30, { borderWidth: 1 });
+      drawRect(320, 420, 50, 30, { borderWidth: 1 });
+      drawRect(370, 420, 80, 30, { borderWidth: 1 });
+      drawRect(450, 420, 112, 30, { borderWidth: 1 });
       
-      const pickupShed = `${formData.pickup.address.substring(0, 15)} (${formData.pickup.city.toUpperCase()},${formData.pickup.state.toUpperCase()})`;
-      drawText(pickupShed, 55, 430, { size: 7 });
-      drawText(formData.pickup.city, 180, 430, { size: 8 });
-      drawText(formData.pickup.state.toUpperCase(), 245, 430, { size: 8 });
-      drawText(formData.pickup.zip, 285, 430, { size: 8 });
-      drawText('AL25179', 325, 430, { size: 8 });
-      drawText(formatDate(formData.pickup.date), 375, 430, { size: 8 });
-      drawText('FCFS 08:00 to 06:00', 455, 430, { size: 7 });
+      // Better formatted pickup shed information with multiple lines
+      drawText(formData.pickup.address, 55, 428, { size: 7 });
+      drawText(`(${formData.pickup.city.toUpperCase()}, ${formData.pickup.state.toUpperCase()})`, 55, 438, { size: 7 });
+      drawText(formData.pickup.city, 180, 435, { size: 8 });
+      drawText(formData.pickup.state.toUpperCase(), 245, 435, { size: 8 });
+      drawText(formData.pickup.zip, 285, 435, { size: 8 });
+      drawText('AL25179', 325, 435, { size: 8 });
+      drawText(formatDate(formData.pickup.date), 375, 435, { size: 8 });
+      drawText('FCFS 08:00 to 06:00', 455, 435, { size: 7 });
 
-      // Pickup Information section
-      drawRect(50, 440, 250, 20, { color: blue });
-      drawText('Information:', 55, 453, { size: 8, bold: true, color: rgb(1, 1, 1) });
+      // Pickup Information section - adjusted positioning and reasonable height
+      drawRect(50, 455, 250, 20, { color: blue });
+      drawText('Information:', 55, 468, { size: 8, bold: true, color: rgb(1, 1, 1) });
       
-      drawRect(50, 460, 250, 45, { borderWidth: 1 });
-      drawText(formData.pickup.name, 55, 470, { size: 8 });
-      drawText(formData.pickup.address, 55, 485, { size: 8 });
-      drawText(`${formData.pickup.city} ${formData.pickup.state.toUpperCase()} ${formData.pickup.zip}`, 55, 500, { size: 8 });
+      drawRect(50, 475, 250, 60, { borderWidth: 1 });
+      drawText(formData.pickup.name, 55, 490, { size: 8 });
+      drawText(formData.pickup.address, 55, 505, { size: 8 });
+      drawText(`${formData.pickup.city} ${formData.pickup.state.toUpperCase()} ${formData.pickup.zip}`, 55, 520, { size: 8 });
 
-      // Commodities section
-      drawRect(310, 440, 252, 20, { color: blue });
-      drawText('Commodities:', 315, 453, { size: 8, bold: true, color: rgb(1, 1, 1) });
+      // Commodities section - adjusted positioning
+      drawRect(310, 455, 252, 20, { color: blue });
+      drawText('Commodities:', 315, 468, { size: 8, bold: true, color: rgb(1, 1, 1) });
       
       // Commodities table - Header row
-      drawRect(310, 460, 40, 15, { borderWidth: 1 });
-      drawRect(350, 460, 40, 15, { borderWidth: 1 });
-      drawRect(390, 460, 80, 15, { borderWidth: 1 });
-      drawRect(470, 460, 92, 15, { borderWidth: 1 });
+      drawRect(310, 475, 40, 15, { borderWidth: 1 });
+      drawRect(350, 475, 40, 15, { borderWidth: 1 });
+      drawRect(390, 475, 80, 15, { borderWidth: 1 });
+      drawRect(470, 475, 92, 15, { borderWidth: 1 });
       
-      drawText('Quantity', 315, 470, { size: 8, bold: true });
-      drawText('Unit', 355, 470, { size: 8, bold: true });
-      drawText('Commodity', 395, 470, { size: 8, bold: true });
-      drawText('Notes', 475, 470, { size: 8, bold: true });
+      drawText('Quantity', 315, 485, { size: 8, bold: true });
+      drawText('Unit', 355, 485, { size: 8, bold: true });
+      drawText('Commodity', 395, 485, { size: 8, bold: true });
+      drawText('Notes', 475, 485, { size: 8, bold: true });
       
-      // Commodities table - Data row (taller to accommodate notes)
-      drawRect(310, 475, 40, 30, { borderWidth: 1 });
-      drawRect(350, 475, 40, 30, { borderWidth: 1 });
-      drawRect(390, 475, 80, 30, { borderWidth: 1 });
-      drawRect(470, 475, 92, 30, { borderWidth: 1 });
+      // Commodities table - Data row (reasonable height)
+      drawRect(310, 490, 40, 45, { borderWidth: 1 });
+      drawRect(350, 490, 40, 45, { borderWidth: 1 });
+      drawRect(390, 490, 80, 45, { borderWidth: 1 });
+      drawRect(470, 490, 92, 45, { borderWidth: 1 });
       
-      drawText('24', 315, 485, { size: 8 });
-      drawText('Pallets', 355, 485, { size: 8 });
-      drawText(formData.commodity.description.substring(0, 12), 395, 485, { size: 8 });
+      drawText('24', 315, 510, { size: 8 });
+      drawText('Pallets', 355, 510, { size: 8 });
+      drawText(formData.commodity.description.substring(0, 12), 395, 510, { size: 8 });
       
       // Dynamic notes based on trailer type - split into multiple lines
       if (formData.commodity.trailerType === 'Refrigerated') {
-        drawText('Keep refrigerated', 475, 483, { size: 7 });
-        drawText('if any issues', 475, 492, { size: 7 });
-        drawText('call broker', 475, 501, { size: 7 });
+        drawText('Keep refrigerated', 475, 508, { size: 7 });
+        drawText('if any issues', 475, 517, { size: 7 });
+        drawText('call broker', 475, 526, { size: 7 });
       } else {
-        drawText('Call broker if', 475, 487, { size: 7 });
-        drawText('any issue', 475, 496, { size: 7 });
+        drawText('Call broker if', 475, 512, { size: 7 });
+        drawText('any issue', 475, 521, { size: 7 });
       }
 
-      // Drops Section
-      drawRect(50, 530, 512, 20, { color: blue });
-      drawText('DROPS', 55, 545, { size: 10, bold: true, color: rgb(1, 1, 1) });
+      // Drops Section - adjusted positioning
+      drawRect(50, 560, 512, 20, { color: blue });
+      drawText('DROPS', 55, 575, { size: 10, bold: true, color: rgb(1, 1, 1) });
       
       // Drops table - Header row
-      drawRect(50, 550, 110, 15, { borderWidth: 1 });
-      drawRect(160, 550, 60, 15, { borderWidth: 1 });
-      drawRect(220, 550, 40, 15, { borderWidth: 1 });
-      drawRect(260, 550, 40, 15, { borderWidth: 1 });
-      drawRect(300, 550, 80, 15, { borderWidth: 1 });
-      drawRect(380, 550, 70, 15, { borderWidth: 1 });
-      drawRect(450, 550, 112, 15, { borderWidth: 1 });
+      drawRect(50, 580, 110, 15, { borderWidth: 1 });
+      drawRect(160, 580, 60, 15, { borderWidth: 1 });
+      drawRect(220, 580, 40, 15, { borderWidth: 1 });
+      drawRect(260, 580, 40, 15, { borderWidth: 1 });
+      drawRect(300, 580, 80, 15, { borderWidth: 1 });
+      drawRect(380, 580, 70, 15, { borderWidth: 1 });
+      drawRect(450, 580, 112, 15, { borderWidth: 1 });
       
-      drawText('Consignee', 55, 560, { size: 8, bold: true });
-      drawText('City', 165, 560, { size: 8, bold: true });
-      drawText('State', 225, 560, { size: 8, bold: true });
-      drawText('Zip', 265, 560, { size: 8, bold: true });
-      drawText('Delivery PO', 305, 560, { size: 8, bold: true });
-      drawText('Date', 385, 560, { size: 8, bold: true });
-      drawText('Time', 455, 560, { size: 8, bold: true });
+      drawText('Consignee', 55, 590, { size: 8, bold: true });
+      drawText('City', 165, 590, { size: 8, bold: true });
+      drawText('State', 225, 590, { size: 8, bold: true });
+      drawText('Zip', 265, 590, { size: 8, bold: true });
+      drawText('Delivery PO', 305, 590, { size: 8, bold: true });
+      drawText('Date', 385, 590, { size: 8, bold: true });
+      drawText('Time', 455, 590, { size: 8, bold: true });
       
-      // Drops table - Data row
-      drawRect(50, 565, 110, 15, { borderWidth: 1 });
-      drawRect(160, 565, 60, 15, { borderWidth: 1 });
-      drawRect(220, 565, 40, 15, { borderWidth: 1 });
-      drawRect(260, 565, 40, 15, { borderWidth: 1 });
-      drawRect(300, 565, 80, 15, { borderWidth: 1 });
-      drawRect(380, 565, 70, 15, { borderWidth: 1 });
-      drawRect(450, 565, 112, 15, { borderWidth: 1 });
+      // Drops table - Data row (doubled height for Consignee row)
+      drawRect(50, 595, 110, 30, { borderWidth: 1 });
+      drawRect(160, 595, 60, 30, { borderWidth: 1 });
+      drawRect(220, 595, 40, 30, { borderWidth: 1 });
+      drawRect(260, 595, 40, 30, { borderWidth: 1 });
+      drawRect(300, 595, 80, 30, { borderWidth: 1 });
+      drawRect(380, 595, 70, 30, { borderWidth: 1 });
+      drawRect(450, 595, 112, 30, { borderWidth: 1 });
       
-      const deliveryConsignee = `${formData.delivery.address.substring(0, 12)} (${formData.delivery.city.toUpperCase()}, ${formData.delivery.state.toUpperCase()})`;
-      drawText(deliveryConsignee, 55, 575, { size: 7 });
-      drawText(formData.delivery.city, 165, 575, { size: 8 });
-      drawText(formData.delivery.state.toUpperCase(), 225, 575, { size: 8 });
-      drawText(formData.delivery.zip, 265, 575, { size: 8 });
-      drawText('2304942', 305, 575, { size: 8 });
-      drawText(formatDate(formData.delivery.date), 385, 575, { size: 8 });
-      drawText('FCFS 07:00 to 12:00', 455, 575, { size: 7 });
+      // Better formatted delivery consignee information with multiple lines
+      drawText(formData.delivery.address, 55, 603, { size: 7 });
+      drawText(`(${formData.delivery.city.toUpperCase()}, ${formData.delivery.state.toUpperCase()})`, 55, 613, { size: 7 });
+      drawText(formData.delivery.city, 165, 610, { size: 8 });
+      drawText(formData.delivery.state.toUpperCase(), 225, 610, { size: 8 });
+      drawText(formData.delivery.zip, 265, 610, { size: 8 });
+      drawText('2304942', 305, 610, { size: 8 });
+      drawText(formatDate(formData.delivery.date), 385, 610, { size: 8 });
+      drawText('FCFS 07:00 to 12:00', 455, 610, { size: 7 });
 
-      // Delivery Information section
-      drawRect(50, 585, 512, 20, { color: blue });
-      drawText('Information:', 55, 598, { size: 8, bold: true, color: rgb(1, 1, 1) });
+      // Delivery Information section - adjusted positioning and reasonable height
+      drawRect(50, 630, 512, 20, { color: blue });
+      drawText('Information:', 55, 643, { size: 8, bold: true, color: rgb(1, 1, 1) });
       
-      drawRect(50, 605, 512, 45, { borderWidth: 1 });
-      drawText(formData.delivery.name, 55, 615, { size: 8 });
-      drawText(formData.delivery.address, 55, 630, { size: 8 });
-      drawText(`${formData.delivery.city} ${formData.delivery.state.toUpperCase()} ${formData.delivery.zip}`, 55, 645, { size: 8 });
+      drawRect(50, 650, 512, 60, { borderWidth: 1 });
+      drawText(formData.delivery.name, 55, 665, { size: 8 });
+      drawText(formData.delivery.address, 55, 680, { size: 8 });
+      drawText(`${formData.delivery.city} ${formData.delivery.state.toUpperCase()} ${formData.delivery.zip}`, 55, 695, { size: 8 });
 
-      // Footer
-      drawText('Page 1 of 1', 280, 755, { size: 8 });
+      // Footer - adjusted positioning
+      drawText('Page 1 of 1', 280, 780, { size: 8 });
       
-      // Add barcode and QR code at bottom
+      // Add barcode and QR code at bottom - adjusted positioning
       try {
         const barcodeResponse = await fetch('/barcode-qr.png');
         if (barcodeResponse.ok) {
@@ -435,7 +437,7 @@ function App() {
           // Draw the barcode/QR code image at bottom center
           page.drawImage(barcodeImage, {
             x: 400,
-            y: height - 735,
+            y: height - 800,
             width: 200,
             height: 80,
           });
@@ -633,24 +635,24 @@ function App() {
                   required
                 />
               </div>
+              </div>
             </div>
-          </div>
 
           {/* Commodity Information */}
           <div className="form-section">
             <h3 className="section-header">📦 COMMODITY INFORMATION</h3>
             <div className="form-grid">
-              <div className="form-group">
+                <div className="form-group">
                 <label>Commodity Description</label>
-                <input
-                  type="text"
+                  <input
+                    type="text"
                   value={formData.commodity.description}
                   onChange={(e) => handleInputChange('commodity', 'description', e.target.value)}
                   placeholder="e.g., Plastic bags"
                   required
-                />
-              </div>
-              <div className="form-group">
+                  />
+                </div>
+                <div className="form-group">
                 <label>Trailer Type</label>
                 <select
                   value={formData.commodity.trailerType}
@@ -663,8 +665,8 @@ function App() {
               </div>
               <div className="form-group">
                 <label>Driver Name</label>
-                <input
-                  type="text"
+                  <input
+                    type="text"
                   value={formData.commodity.driverName}
                   onChange={(e) => handleInputChange('commodity', 'driverName', e.target.value)}
                   placeholder="e.g., Gurpreet"
