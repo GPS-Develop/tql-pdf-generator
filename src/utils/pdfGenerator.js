@@ -45,7 +45,9 @@ export const generateTQLPDF = async (formData) => {
   // Helper function to format date
   const formatDate = (dateString) => {
     if (!dateString) return '';
-    const date = new Date(dateString);
+    // Parse date as local date to avoid timezone issues
+    const [year, month, day] = dateString.split('-');
+    const date = new Date(year, month - 1, day); // month is 0-indexed
     return date.toLocaleDateString('en-US', {
       month: '2-digit',
       day: '2-digit',
